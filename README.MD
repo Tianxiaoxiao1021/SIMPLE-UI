@@ -32,6 +32,7 @@ The current version is not yet fully developed and is released to invite the com
 ## License
 
 SIMPLE-UI is licensed under the [MIT License](https://opensource.org/licenses/MIT), and you are free to use, modify, and distribute the software, provided that the copyright notice and license information are retained.
+(If you are one of the contributors to the project, you can ignore this requirement and do not need to declare the copyright owner.)
 
 ---
 
