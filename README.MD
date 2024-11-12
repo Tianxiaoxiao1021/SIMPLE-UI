@@ -39,18 +39,20 @@ SIMPLE-UI is licensed under the [MIT License](https://opensource.org/licenses/MI
 
 SIMPLE-UI is an open source project and anyone is welcome to contribute:
 
-- Fork the project and submit Pull Requests.
 - Provide bug reports and feature requests.
 - Help improve documentation and sample code.
-(For bug feedback or code contributions, please send an email to `BF_bug_feedback@126.com`)
 
----Contribute to the project: Fork the project and submit Pull Requests.
+If you want to submit bug feedback or improvement suggestions/code, pls send mail to `BF_bug_feedback@126.com`.
+
+---
 
 ## Contact information
 
-- **Copyright owner**: [tianxiaoxiao](https://github.com/tianxiaoxiao)
+- **Copyright owner**: [tianxiaoxiao](https://github.com/Tianxiaoxiao1021)
 - **Year**: 2024
 
 ----
+
+This project is stable with weekly updates, if there is a major bug we will fix it urgently.
 
 Thank you for your use and contribution!
