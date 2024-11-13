@@ -23,7 +23,7 @@ The current version is not yet fully developed and is released to invite the com
    
 2. **C++ compiler**: C++11 and above compilers are supported.
 
-2. **Event Handling**: Through the interface provided by `Swindow`, you can easily handle user input events, such as keyboard, mouse, etc. 3.
+2. **Event Handling**: Through the interface provided by this project, you can easily handle user input events.
 
 3. **Extension**: SIMPLE-UI is designed to be modular, you can extend more window controls and functions as needed.
 
