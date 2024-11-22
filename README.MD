@@ -54,6 +54,6 @@ If you want to submit bug feedback or improvement suggestions/code, pls send mai
 
 ----
 
-This project is stable with weekly updates, if there is a major bug we will fix it urgently.
+This project is updated on a monthly basis, and in the event of a major error or significant update, we will submit changes to the repository in a timely manner.
 
 Thank you for your use and contribution!
