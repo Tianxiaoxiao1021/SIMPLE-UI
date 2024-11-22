@@ -45,7 +45,7 @@ SIMPLE-UI is an open source project and anyone is welcome to contribute:
 - Provide bug reports and feature requests.
 - Help improve documentation and sample code.
 
-If you want to submit bug feedback or improvement suggestions/code, pls send mail to `BF_bug_feedback@126.com`.
+If you want to submit bug feedback or improvement suggestions/code, pls send mail to *BF_bug_feedback@126.com*.
 
 ---
 
