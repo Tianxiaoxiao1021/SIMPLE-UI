@@ -141,6 +141,7 @@ public:
         while (!glfwWindowShouldClose(window)) {
             // 获取窗口的背景颜色
             Scolor backgroundColor = w->getFillColor();
+            this->setupVertexData(w->getVertices()); // 设置顶点数据
             auto [r, g, b, a] = colorToFloat(backgroundColor); // 使用之前定义的颜色转换函数
             glClearColor(r, g, b, a); // 清除颜色缓存，设置背景色
             glClear(GL_COLOR_BUFFER_BIT); // 清空窗口

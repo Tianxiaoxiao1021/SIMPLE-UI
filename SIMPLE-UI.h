@@ -1,9 +1,9 @@
 /*
-*                            ___   ___   __  __   ___   _      ___         _   _   ___ 
-*                           / __| |_ _| |  \/  | | _ \ | |    | __)  ___  | | | | |_ _|
-*  C++ GUI software library \__ \  | |  | |\/| | |  _/ | |__  | _|  (___) | |_| |  | | 
-*                           |___/ |___| |_|  |_| |_|   |____) |___)        \___/  |___|
-*                                                                                                                       
+*                           ___   ___   __  __   ___   _      ___         _   _   ___ 
+*                          / __| |_ _| |  \/  | | _ \ | |    | __)  ___  | | | | |_ _|
+*C++ GUI software library  \__ \  | |  | |\/| | |  _/ | |__  | _|  (___) | |_| |  | | 
+*                          |___/ |___| |_|  |_| |_|   |____) |___)        \___/  |___|
+*
 *
 * copyright(c) 2024 tianxiaoxiao
 * 
@@ -16,6 +16,8 @@
 #include "Swindow.h"
 #include "SrenderEngine.h"
 #include "SsignalEngine.h"
+#include "Slist.h"
+#include "SlistItem.h"
 GLFWwindow* toGLFWwindow(Swindow* window)
 {
 	GLFWwindow* result = glfwCreateWindow(window->getWidth(), window->getHeight(), window->getTitle().c_str(), NULL, NULL);
@@ -31,9 +33,10 @@ void SrenderEngine::render(SsignalEngine& signalengine)
     signalengine.emit("onSwindowRender",std::any_cast<Swindow*>(this->w));
     // 渲染循环
     while (!glfwWindowShouldClose(window)) {
+        signalengine.emit("onSwindowUpdate", std::any_cast<Swindow*>(this->w));
         // 获取窗口的背景颜色
         Scolor backgroundColor = w->getFillColor();
-        auto [r, g, b, a] = colorToFloat(backgroundColor); // 使用之前定义的颜色转换函数
+        auto [r, g, b, a] = colorToFloat(backgroundColor);
         glClearColor(r, g, b, a); // 清除颜色缓存，设置背景色
         glClear(GL_COLOR_BUFFER_BIT); // 清空窗口
 
@@ -98,4 +101,53 @@ bool ShandleInput(GLFWwindow* window, int key) {
         return true;
     }
     return false;
+}
+void Scontrol::render(SrenderEngine* renderEngine) {
+    // 发送尝试渲染信号
+    this->signalEngine->emit("onScontrolRender", std::make_pair(this, renderEngine));
+}
+void onListRender(std::any a)
+{
+    try
+    {
+        // 提取 pair 类型的值
+        auto pair = std::any_cast<std::pair<Slist*, SrenderEngine*>>(a);
+        Slist* list = pair.first;
+        SrenderEngine* renderEngine = pair.second;
+
+        // 遍历列表项
+        for (auto& i : list->getItems())
+        {
+            if (i->isVisible())
+            {
+                // 处理渲染列表项
+            }
+        }
+    }
+    catch (const std::bad_any_cast& e)
+    {
+        return;
+    }
+}
+void Swindow::renderAll(SrenderEngine* renderEngine)
+{
+    for (auto i : this->control)
+    {
+        i->render(renderEngine);
+    }
+}
+void SlistItem::onCilck()
+{
+    this->engine->emit("onSlistItemCilck",this);
+}
+void SinitEngine(SsignalEngine& e)
+{
+    e.connect("onScontrolRender",onListRender);
+}
+std::pair<int, int> SgetMousePos(Swindow* window)
+{
+    GLFWwindow* glfwWindow = toGLFWwindow(window);
+    double xpos, ypos;
+    glfwGetCursorPos(glfwWindow, &xpos, &ypos);
+    return std::make_pair(xpos, ypos);
 }

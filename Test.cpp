@@ -29,10 +29,9 @@ int main() {
     s.connect("onSwindowClose", [](std::any a) {
         std::cout << "Swindow " << R"(")" << std::any_cast<Swindow*>(a)->getTitle() << R"(")" << " is closed" << std::endl;
         });
-    Slist* s2;
-    std::cout << instanceof<Scontrol>(s2) << std::endl;
     // ×¢²áäÖÈ¾ÒýÇæ
     SrenderEngine engine(&window);
+    engine.render();
 
     return 0;
 }

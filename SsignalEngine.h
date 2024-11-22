@@ -1,5 +1,5 @@
 /*
-* SsineEngine.h
+* SsignalEngine.h
 * 此文件包含了SIMPLE-UI库的信号引擎类SsineEngine的声明
 */
 #pragma once

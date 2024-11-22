@@ -9,6 +9,7 @@ class Swindow
 private:
 	std::vector<SchildWindow*> child;//子窗口列表
 	std::vector<Scontrol*> control;//控件列表
+	std::vector<Vertex> vertices;//渲染任务，也就是窗口的顶点数据
 	std::string title;//窗口标题
 	int width, height;//窗口大小
 	bool visible;//窗口是否可见
@@ -25,6 +26,21 @@ public:
 	{
 		return;
 	}
+	void addVertex(Vertex vertex)
+	{
+		vertices.push_back(vertex);
+	}
+	void delVertex(int index)
+	{
+		// 越界检查
+		if (!index || index > vertices.size() || index + vertices.begin() > vertices.end())return;
+		vertices.erase(vertices.begin() + index);
+	}
+	std::vector<Vertex> getVertices() const
+	{
+		return vertices;
+	}
+	void renderAll(SrenderEngine* renderengine);
 	Swindow(SsignalEngine* signalengine,
 		std::string title,
 		int width, int height,
@@ -111,6 +127,18 @@ public:
 	void addControl(Scontrol* control)
 	{
 		this->control.push_back(control);
+	}
+	void setVisible(bool visible)
+	{
+		this->visible = visible;
+	}
+	void setResizable(bool resizable)
+	{
+		this->resizable = resizable;
+	}
+	void setFullscreen(bool fullscreen)
+	{
+		this->fullscreen = fullscreen;
 	}
 	~Swindow()
 	{

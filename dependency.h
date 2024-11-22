@@ -45,6 +45,8 @@ class SchildWindow;
 class SrenderEngine;
 class SsignalEngine;
 class SlistItem;
+class SmediaPlayer;
+class Stext;
 enum class Slayout
 {
 	LEFT = 0,
@@ -54,15 +56,3 @@ enum class Slayout
 	CENTER = 4
 };
 bool ShandleInput(GLFWwindow* window, int key);
-
-// 辅助函数：判断是否为某个类的实例
-template<class b, class c>
-bool instanceof(const c* basePtr) {
-	try {
-		const b& derivedObj = dynamic_cast<const b&>(*basePtr);
-		return true;
-	}
-	catch (const std::bad_cast&) {
-		return false;
-	}
-}
