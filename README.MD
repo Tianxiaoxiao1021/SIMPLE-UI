@@ -2,7 +2,7 @@
 
 SIMPLE-UI is a simple C++ graphical user interface (GUI) library designed to provide a lightweight and easy-to-use framework for building OpenGL-based GUI applications. The library is modular in design and supports the creation and management of GUI windows through classes such as Swindow, for developers who need an OpenGL environment and want to avoid complex dependencies.
 
-By the way, this project is one of the *"SIMPLE" series* (and the first project of the *"SIMPLE"* series), whose main idea is to provide developers with easy-to-use frameworks, libraries, and software (completely open source).
+By the way, this project is one of the *"SIMPLE" series* (and the first project of the *"SIMPLE" series*), whose main idea is to provide developers with easy-to-use frameworks, libraries, and software (completely open source).
 
 The current version is not yet fully developed and is released to invite the community to participate in its development and maintenance, with more features and optimizations to come.
 
