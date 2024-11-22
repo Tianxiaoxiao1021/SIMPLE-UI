@@ -49,7 +49,7 @@ If you want to submit bug feedback or improvement suggestions/code, pls send mai
 
 ## Contact information
 
-- **Copyright owner**: [tianxiaoxiao](https://github.com/Tianxiaoxiao1021)
+- **Copyright owner**: [*Tianxiaoxiao1021*](https://github.com/Tianxiaoxiao1021)
 - **Year**: 2024
 
 ----
