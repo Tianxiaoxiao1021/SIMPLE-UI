@@ -23,7 +23,7 @@ The current version is not yet fully developed and is released to invite the com
 
 1. **OpenGL**: SIMPLE-UI uses OpenGL for graphics rendering, so you need to configure a valid OpenGL environment. You can use libraries like GLFW or SDL to create OpenGL contexts.
    
-2. **C++ compiler**: C++11 and above compilers are supported.
+2. **C++ compiler**: C++17 or above.
 
 2. **Event Handling**: Through the interface provided by this project, you can easily handle user input events.
 
