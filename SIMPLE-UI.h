@@ -1,153 +1,99 @@
+#define VERSION "0.0.1 developer preview"
+#ifndef SIMPLE_UI_H
+#define SIMPLE_UI_H
 /*
-*                           ___   ___   __  __   ___   _      ___         _   _   ___ 
-*                          / __| |_ _| |  \/  | | _ \ | |    | __)  ___  | | | | |_ _|
-*C++ GUI software library  \__ \  | |  | |\/| | |  _/ | |__  | _|  (___) | |_| |  | | 
-*                          |___/ |___| |_|  |_| |_|   |____) |___)        \___/  |___|
-*
-*
-* copyright(c) 2024 tianxiaoxiao
-* 
-* -----------------------------------------*
 * SIMPLE-UI.h
-* 此文件统一引入了SIMPLE-UI的几个功能模块
+* SIMPLE-UI 图形库的主要头文件
+* 
+* 包含了所有必要的头文件，并对外提供统一的接口
 */
-#pragma once
-#include "Scontrol.h"
+#include "dependency.h"
+#include "SsignalEngine.h"
 #include "Swindow.h"
 #include "SrenderEngine.h"
-#include "SsignalEngine.h"
-#include "Slist.h"
+#include "Scontrol.h"
 #include "SlistItem.h"
-GLFWwindow* toGLFWwindow(Swindow* window)
-{
-	GLFWwindow* result = glfwCreateWindow(window->getWidth(), window->getHeight(), window->getTitle().c_str(), NULL, NULL);
-	return result;
+void Scontrol::render() {
+    this->parent->getSignalEngine()->emit("OnScontrolRender",this);
 }
-void SrenderEngine::setWindow(Swindow* window)
-{
-	this->window = toGLFWwindow(window);
+void Swindow::close() {
+	this->~Swindow();
 }
-void SrenderEngine::render(SsignalEngine& signalengine)
-{
-    // 连接信号
-    signalengine.emit("onSwindowRender",std::any_cast<Swindow*>(this->w));
-    // 渲染循环
-    while (!glfwWindowShouldClose(window)) {
-        signalengine.emit("onSwindowUpdate", std::any_cast<Swindow*>(this->w));
-        // 获取窗口的背景颜色
-        Scolor backgroundColor = w->getFillColor();
-        auto [r, g, b, a] = colorToFloat(backgroundColor);
-        glClearColor(r, g, b, a); // 清除颜色缓存，设置背景色
-        glClear(GL_COLOR_BUFFER_BIT); // 清空窗口
+void SrenderEngine::render() {
+    std::vector<Vertex> vertices = this->renderWindow->getVertices();
+    glBindVertexArray(VAO);
 
-        glUseProgram(shaderProgram);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
 
-        glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 6); // 渲染矩形（由2个三角形组成）
-        glBindVertexArray(0);
+    // 位置属性
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
+    glEnableVertexAttribArray(0);
 
-        glfwSwapBuffers(window);
-        glfwPollEvents();
+    // 颜色属性
+    glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (void*)offsetof(Vertex, color));
+    glEnableVertexAttribArray(1);
+
+    glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+}
+void Swindow::renderAll() {
+    for (auto c : this->controls) {
+        c->render();
     }
-    signalengine.emit("onSwindowClose", std::any_cast<Swindow*>(this->w));
 }
-// 基础应用窗口类
-class BasicAppwindow : public Swindow {
-private:
-    std::vector<SchildWindow*> child; // 子窗口列表
-    std::vector<Scontrol*> control;   // 控件列表
-    std::string title;                // 窗口标题
-    int width, height;                // 窗口大小
-    bool visible;                     // 窗口是否可见
-    bool resizable;                   // 窗口是否可缩放
-    bool fullscreen;                  // 窗口是否全屏
-    Scolor fillcolor;                 // 窗口背景色
-    SrenderEngine* renderEngine;      // 渲染引擎实例
-
-public:
-    BasicAppwindow(SsignalEngine* signalengine,
-        std::string title,
-        int width, int height,
-        bool visible,
-        bool resizable,
-        bool fullscreen,
-        SrenderEngine* renderEngine) : // 添加参数
-        Swindow(signalengine, title, width, height, visible, resizable, fullscreen),
-        child(),
-        control(),
-        renderEngine(renderEngine) // 初始化渲染引擎
-    {
-        this->setup();
-    }
-    BasicAppwindow(SsignalEngine* signalengine,
-        std::string title,
-        int width, int height,
-        bool visible,
-        bool resizable,
-        bool fullscreen,
-        std::any a,
-        SrenderEngine* renderEngine) : // 添加参数
-        Swindow(signalengine, title, width, height, visible, resizable, fullscreen),
-        child(),
-        control(),
-        renderEngine(renderEngine) // 初始化渲染引擎
-    {
-        this->setup(a);
-    }
-};
-// 处理键盘输入的函数，返回按键是否被按下
-bool ShandleInput(GLFWwindow* window, int key) {
-    if (glfwGetKey(window, key) == GLFW_PRESS) {
-        return true;
-    }
-    return false;
+GLFWwindow* toGLFWwindow(Swindow* window) {
+	if (!window)return;
+	GLFWwindow* glfwwindow = glfwCreateWindow(window->getWidth(), window->getHeight(), window->getTitle().c_str(), NULL, NULL);
+	glfwSetWindowPos(glfwwindow, window->getX(), window->getY());
+	return glfwwindow;
 }
-void Scontrol::render(SrenderEngine* renderEngine) {
-    // 发送尝试渲染信号
-    this->signalEngine->emit("onScontrolRender", std::make_pair(this, renderEngine));
+void SsetMousePos(Swindow* window,int x, int y) {
+	GLFWwindow* window2 = toGLFWwindow(window);
+	if (window) {
+		glfwSetCursorPos(window2, x, y);
+	}
 }
-void onListRender(std::any a)
-{
-    try
-    {
-        // 提取 pair 类型的值
-        auto pair = std::any_cast<std::pair<Slist*, SrenderEngine*>>(a);
-        Slist* list = pair.first;
-        SrenderEngine* renderEngine = pair.second;
-
-        // 遍历列表项
-        for (auto& i : list->getItems())
-        {
-            if (i->isVisible())
-            {
-                // 处理渲染列表项
+void OnSlistRender(std::any a) {
+    try {
+        Slist* list = std::any_cast<Slist*>(a);
+        for (auto& sublist : list->getSublists()) {
+            switch (sublist->getLayout()) {
+            case Slayout::LEFT:
+                sublist->getParent()->addVertex(Vertex());
+                break;
+            case Slayout::TOP:
+                sublist->getParent()->addVertex(Vertex());
+                break;
+            case Slayout::RIGHT:
+                sublist->getParent()->addVertex(Vertex());
+                break;
+            case Slayout::BOTTOM:
+                sublist->getParent()->addVertex(Vertex());
+                break;
+            case Slayout::CENTER:
+                sublist->getParent()->addVertex(Vertex());
+                break;
             }
+            OnSlistRender(sublist);  // 递归渲染子列表
+        }
+        for (auto& item : list->getItems()) {
+
         }
     }
-    catch (const std::bad_any_cast& e)
-    {
+    catch (std::bad_any_cast& e) {
         return;
     }
 }
-void Swindow::renderAll(SrenderEngine* renderEngine)
-{
-    for (auto i : this->control)
-    {
-        i->render(renderEngine);
+void SinitSignalEngine(SsignalEngine* e) {
+    e->connect("OnScontrolRender",OnSlistRender);
+}
+void Slist::addItem(SlistItem* item) {
+    if (item->getParent() != this and item->isVisible()) {
+        item->setParent(this);
+        this->items.push_back(item);
     }
 }
-void SlistItem::onCilck()
-{
-    this->engine->emit("onSlistItemCilck",this);
-}
-void SinitEngine(SsignalEngine& e)
-{
-    e.connect("onScontrolRender",onListRender);
-}
-std::pair<int, int> SgetMousePos(Swindow* window)
-{
-    GLFWwindow* glfwWindow = toGLFWwindow(window);
-    double xpos, ypos;
-    glfwGetCursorPos(glfwWindow, &xpos, &ypos);
-    return std::make_pair(xpos, ypos);
-}
+#endif

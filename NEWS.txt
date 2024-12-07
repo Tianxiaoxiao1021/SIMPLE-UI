@@ -1,0 +1,5 @@
+[2024.12.7 UTC+8 22:42 UTC+5 09:43 { IMPORTANT UPDATE } ]
+Refactor almost all code, optimize some code structure and design including constructors:
+1.Supports multi-level nested Slist lists.
+2.Eliminate the design of multiple files and unify the subclasses of Scontrol into Scontrol.h file.
+3.Fixed the bug that Swindow needs to be bound to each other with SrenderEngine.

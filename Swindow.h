@@ -1,159 +1,66 @@
-/*
-* Swindow.h
-* 此文件包含了Swindow类的定义，用户可以通过编写这个类的子类或直接创建这个类的实例来创建窗口
-*/
-#pragma once
+// Swindow.h
+#ifndef SWINDOW_H
+#define SWINDOW_H
 #include "dependency.h"
+
 class Swindow
 {
 private:
-	std::vector<SchildWindow*> child;//子窗口列表
-	std::vector<Scontrol*> control;//控件列表
-	std::vector<Vertex> vertices;//渲染任务，也就是窗口的顶点数据
-	std::string title;//窗口标题
-	int width, height;//窗口大小
-	bool visible;//窗口是否可见
-	bool resizable;//窗口是否可缩放
-	bool fullscreen;//窗口是否全屏
-	Scolor fillcolor;//窗口背景色
+	int width;// 宽
+	int height;// 高
+	int x, y;// 位置
+	std::string title;// 标题
+	bool visible;// 可见性
+	SrenderEngine* renderEngine;// 渲染引擎
+	SsignalEngine* signalEngine;// 信号引擎
+	std::vector<Vertex> vertices;// 顶点集合
+	std::vector<Scontrol*> controls;// 控件集合
 public:
-	//用户可以重写这两个虚函数来实现自己的窗口初始化
-	virtual void setup()
-	{
-		return;
-	}
-	virtual void setup(std::any a)
-	{
-		return;
-	}
-	void addVertex(Vertex vertex)
-	{
-		vertices.push_back(vertex);
-	}
-	void delVertex(int index)
-	{
-		// 越界检查
-		if (!index || index > vertices.size() || index + vertices.begin() > vertices.end())return;
-		vertices.erase(vertices.begin() + index);
-	}
-	std::vector<Vertex> getVertices() const
-	{
-		return vertices;
-	}
-	void renderAll(SrenderEngine* renderengine);
-	Swindow(SsignalEngine* signalengine,
-		std::string title,
-		int width, int height,
-		bool visible,
-		bool resizable,
-		bool fullscreen
-	) :
-		child(std::vector<SchildWindow*>()),
-		control(std::vector<Scontrol*>()),
-		title(title),
-		width(width),
-		height(height),
-		visible(visible),
-		resizable(resizable),
-		fullscreen(fullscreen)
-	{
-		this->setup();
-	}
-	Swindow(){
-		this->setup();
-	}
-	Swindow(std::any a)
-	{
-		this->setup(a);
-	}
-	Swindow(int height, int width,
-		std::string title,std::any a)
-		: width(width), height(height), title(title)
-	{
-		this->setup(a);
-	}
-	Swindow(SchildWindow* child,
-		SsignalEngine* signalengine,
-		std::string title,
-		int width, int height,
-		bool visible,
-		bool resizable,
-		bool fullscreen,
-		std::any a
-	) :
-		child(std::vector<SchildWindow*>()),
-		control(std::vector<Scontrol*>()),
-		title(title),
-		width(width),
-		height(height),
-		visible(visible),
-		resizable(resizable),
-		fullscreen(fullscreen)
-	{
-		this->setup(a);
-	}
-	int getHeight() const
-	{
-		return height;
-	}
-	int getWidth() const
-	{
-		return width;
-	}
-	bool isVisible() const
-	{
-		return visible;
-	}
-	bool isResizable() const
-	{
-		return resizable;
-	}
-	bool isFullscreen() const
-	{
-		return fullscreen;
-	}
-	std::string getTitle() const
-	{
-		return title;
-	}
-	Scolor getFillColor() const
-	{
-		return fillcolor;
-	}
-	void addChild(SchildWindow* child)
-	{
-		this->child.push_back(child);
-	}
-	void addControl(Scontrol* control)
-	{
-		this->control.push_back(control);
-	}
-	void setVisible(bool visible)
-	{
-		this->visible = visible;
-	}
-	void setResizable(bool resizable)
-	{
-		this->resizable = resizable;
-	}
-	void setFullscreen(bool fullscreen)
-	{
-		this->fullscreen = fullscreen;
-	}
-	~Swindow()
-	{
-		//清理资源,释放内存
-		for (auto child : child)
-		{
-			delete child;
-		}
-		for (auto control : control)
-		{
+	Swindow(int width, int height, std::string title)
+		:width(width), height(height),x(0) ,y(0) ,title(title), visible(true), renderEngine(nullptr), signalEngine(nullptr)
+	{}
+	Swindow(int width, int height, int x, int y, std::string title)
+		:width(width), height(height), x(x), y(y), title(title), visible(true), renderEngine(nullptr), signalEngine(nullptr)
+	{}
+	Swindow(int width, int height, int x, int y, std::string title, bool visible)
+		:width(width), height(height), x(x), y(y), title(title), visible(visible), renderEngine(nullptr), signalEngine(nullptr)
+	{}
+	Swindow(int width, int height, int x, int y, std::string title, bool visible, SrenderEngine* renderEngine, SsignalEngine* signalEngine)
+		:width(width), height(height), x(x), y(y), title(title), visible(visible), renderEngine(renderEngine), signalEngine(signalEngine)
+	{}
+	~Swindow() {
+		for (auto control : controls) {
 			delete control;
 		}
+		if (renderEngine) {
+			delete renderEngine;
+		}
+		if (signalEngine) {
+			delete signalEngine;
+		}
 	}
-	void setFillColor(Scolor color)
-	{
-		fillcolor = color;
+	int getWidth() const { return width; }
+	int getHeight() const { return height; }
+	int getX() const { return x; }
+	int getY() const { return y; }
+	std::string getTitle() const { return title; }
+	void setTitle(std::string title) {this->title = title; }
+	bool isVisible() const { return visible; }
+	void setVisible(bool visible) { this->visible = visible; }
+	SrenderEngine* getRenderEngine() const { return renderEngine; }
+	SsignalEngine* getSignalEngine() const { return signalEngine; }
+	SrenderEngine* setRenderEngine(SrenderEngine* renderEngine) { if(renderEngine)this->renderEngine = renderEngine; }
+	SsignalEngine* setSignalEngine(SsignalEngine* signalEngine) { if(signalEngine)this->signalEngine = signalEngine; }
+	std::vector<Scontrol*> getControls() const { return controls; }
+	std::vector<Vertex> getVertices() const { return vertices; }
+	void setVertices(std::vector<Vertex> vertices) { this->vertices = vertices; }
+	void addVertex(Vertex vertex) {vertices.push_back(vertex); }
+	void setX(int x) { this->x = x; }
+	void setY(int y) { this->y = y; }
+	void close();
+	void addControl(Scontrol* control) {
+		controls.push_back(control);
 	}
+	void renderAll();
 };
+#endif

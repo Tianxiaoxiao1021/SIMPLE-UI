@@ -1,7 +1,6 @@
-/*
-* SsignalEngine.h
-* 此文件包含了SIMPLE-UI库的信号引擎类SsineEngine的声明
-*/
+//SsignalEngine.h
+#ifndef SSIGNALENGINE_H
+#define SSIGNALENGINE_H
 #pragma once
 #include "dependency.h"
 // 定义 SignalEngine 类
@@ -26,3 +25,4 @@ public:
         }
     }
 };
+#endif
