@@ -16,6 +16,17 @@
 void Scontrol::render() {
     this->parent->getSignalEngine()->emit("OnScontrolRender",this);
 }
+void SeditBox::OnTextChange() {
+    this->getParent()->getSignalEngine()->emit("OnSeditBoxTextChange",this);
+}
+void Sbutton::OnPress() {
+    this->pressed = true;
+    this->getParent()->getSignalEngine()->emit("OnSbuttonPress",this);
+}
+void Sbutton::OnRelease() {
+    this->pressed = false;
+    this->getParent()->getSignalEngine()->emit("OnSbuttonRelease",this);
+}
 void Swindow::close() {
 	this->~Swindow();
 }
@@ -80,7 +91,23 @@ void OnSlistRender(std::any a) {
             OnSlistRender(sublist);  // µİ¹éäÖÈ¾×ÓÁĞ±í
         }
         for (auto& item : list->getItems()) {
-
+            switch (item->getParent()->getLayout()) {
+                case Slayout::LEFT:
+                    item->getParent()->getParent()->addVertex(Vertex());
+                    break;
+                case Slayout::TOP:
+                    item->getParent()->getParent()->addVertex(Vertex());
+                    break;
+                case Slayout::RIGHT:
+                    item->getParent()->getParent()->addVertex(Vertex());
+                    break;
+                case Slayout::BOTTOM:
+                    item->getParent()->getParent()->addVertex(Vertex());
+                    break;
+                case Slayout::CENTER:
+                    item->getParent()->getParent()->addVertex(Vertex());
+                    break;
+            }
         }
     }
     catch (std::bad_any_cast& e) {

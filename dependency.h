@@ -38,9 +38,21 @@ Scolor makeScolor(int r, int g, int b, int a = 255) {
 }
 //顶点集结构体
 struct Vertex {
-	float position[3];  // 顶点位置 (x, y, z)
+	int position[3];  // 顶点位置 (x, y, z)
 	Scolor color[3];    // 顶点颜色（每个顶点包含3个颜色值）
 };
+Vertex makeVertex(int x, int y, int z, Scolor c1, Scolor c2, Scolor c3) {
+    Vertex v;
+    v.position[0] = x;
+    v.position[1] = y;
+    v.position[2] = z;
+    v.color[0] = c1;
+    v.color[1] = c2;
+    v.color[2] = c3;
+    return v;
+}
+// 在 SeditBox 中使用的字符类
+struct Stext;
 // 主窗口类
 class Swindow;
 // 控件基类

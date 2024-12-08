@@ -3,3 +3,5 @@ Refactor almost all code, optimize some code structure and design including cons
 1.Supports multi-level nested Slist lists.
 2.Eliminate the design of multiple files and unify the subclasses of Scontrol into Scontrol.h file.
 3.Fixed the bug that Swindow needs to be bound to each other with SrenderEngine.
+[2024.12.8 UTC+8 21:41 UTC+5 08:41 { IMPORTANT UPDATE } ]
+Added definitions for Slabel, Sbutton and many other classes.
