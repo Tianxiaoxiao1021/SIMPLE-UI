@@ -20,17 +20,19 @@
 #include <exception>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+long long maxWindowID = 0;
 enum class Scolor
 {
 	BLACK = 0,
-	WHITE = 1,
-	RED = 2,
-	GREEN = 3,
-	BLUE = 4,
-	YELLOW = 5,
-	CYAN = 6,
-	MAGENTA = 7,
-	TRANSPARENT = 8
+    GRAY = 1,
+	WHITE = 2,
+	RED = 3,
+	GREEN = 4,
+	BLUE = 5,
+	YELLOW = 6,
+	CYAN = 7,
+	MAGENTA = 8,
+	TRANSPARENT = 9
 };
 // 从 RGBA 格式转为 Scolor
 Scolor makeScolor(int r, int g, int b, int a = 255) {
@@ -102,6 +104,8 @@ std::tuple<float, float, float, float> colorToFloat(Scolor color) {
     switch (color) {
     case Scolor::BLACK:
         return std::make_tuple(0.0f, 0.0f, 0.0f, 1.0f);
+    case Scolor::GRAY:
+        return std::make_tuple(0.5f, 0.5f, 0.5f, 1.0f);
     case Scolor::WHITE:
         return std::make_tuple(1.0f, 1.0f, 1.0f, 1.0f);
     case Scolor::RED:

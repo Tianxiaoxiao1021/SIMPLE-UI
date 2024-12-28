@@ -1,0 +1,10 @@
+[2024.12.7 UTC+8 22:42 UTC+5 09:43 { IMPORTANT UPDATE } ]
+Refactor almost all code, optimize some code structure and design including constructors:
+1.Supports multi-level nested Slist lists.
+2.Eliminate the design of multiple files and unify the subclasses of Scontrol into Scontrol.h file.
+3.Fixed the bug that Swindow needs to be bound to each other with SrenderEngine.
+[2024.12.8 UTC+8 21:41 UTC+5 08:41 { IMPORTANT UPDATE } ]
+Added definitions for Slabel, Sbutton and many other classes.
+[2024.12.29 UTC+8 2:54 UTC+5 13:54 {UPDATE} ]
+This update focuses on fixing a rendering issue with the SrenderEngine class, now the SrenderEngine::render() function will only render one frame, which means you need to use a while loop to control the rendering continuously.
+Additionally, we fixed the bug in the test.cpp file, and now that we have ensured that the test.cpp file is using the latest API, you can test if the current version of the SIMPLE-UI library works on your PC, and if it does, you should see a few triangles in the program window.

@@ -1,11 +1,13 @@
-#define VERSION "0.0.1 developer preview"
+#define VERSION "0.0.1"
 #ifndef SIMPLE_UI_H
 #define SIMPLE_UI_H
 /*
-* SIMPLE-UI.h
-* SIMPLE-UI 图形库的主要头文件
 * 
-* 包含了所有必要的头文件，并对外提供统一的接口
+* SIMPLE-UI framework
+* 
+* 
+* copyright (c) 2024 Tianxiaoxiao1021
+* 
 */
 #include "dependency.h"
 #include "SsignalEngine.h"
@@ -13,6 +15,14 @@
 #include "SrenderEngine.h"
 #include "Scontrol.h"
 #include "SlistItem.h"
+const char* FontPath;
+void SsetFontPath(const char* path) {
+    if (!path)return;
+    FontPath = path;
+}
+const char* SgetFontPath() {
+    return FontPath;
+}
 void Scontrol::render() {
     this->parent->getSignalEngine()->emit("OnScontrolRender",this);
 }
@@ -21,6 +31,7 @@ void SeditBox::OnTextChange() {
 }
 void Sbutton::OnPress() {
     this->pressed = true;
+
     this->getParent()->getSignalEngine()->emit("OnSbuttonPress",this);
 }
 void Sbutton::OnRelease() {
@@ -30,33 +41,13 @@ void Sbutton::OnRelease() {
 void Swindow::close() {
 	this->~Swindow();
 }
-void SrenderEngine::render() {
-    std::vector<Vertex> vertices = this->renderWindow->getVertices();
-    glBindVertexArray(VAO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
-
-    // 位置属性
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
-    glEnableVertexAttribArray(0);
-
-    // 颜色属性
-    glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (void*)offsetof(Vertex, color));
-    glEnableVertexAttribArray(1);
-
-    glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-}
 void Swindow::renderAll() {
     for (auto c : this->controls) {
         c->render();
     }
 }
 GLFWwindow* toGLFWwindow(Swindow* window) {
-	if (!window)return;
+	if (!window)return NULL;
 	GLFWwindow* glfwwindow = glfwCreateWindow(window->getWidth(), window->getHeight(), window->getTitle().c_str(), NULL, NULL);
 	glfwSetWindowPos(glfwwindow, window->getX(), window->getY());
 	return glfwwindow;
@@ -73,6 +64,7 @@ void OnSlistRender(std::any a) {
         for (auto& sublist : list->getSublists()) {
             switch (sublist->getLayout()) {
             case Slayout::LEFT:
+                
                 sublist->getParent()->addVertex(Vertex());
                 break;
             case Slayout::TOP:
@@ -114,6 +106,17 @@ void OnSlistRender(std::any a) {
         return;
     }
 }
+void OnSeditBoxRender(std::any a) {
+    try {
+        SeditBox* editBox = std::any_cast<SeditBox*>(a);
+        switch (editBox->getLayout()) {
+
+        }
+    }
+    catch (std::bad_any_cast& e) {
+        return;
+    }
+}
 void SinitSignalEngine(SsignalEngine* e) {
     e->connect("OnScontrolRender",OnSlistRender);
 }
@@ -121,6 +124,12 @@ void Slist::addItem(SlistItem* item) {
     if (item->getParent() != this and item->isVisible()) {
         item->setParent(this);
         this->items.push_back(item);
+    }
+}
+void Swindow::setRenderEngine(SrenderEngine* engine) {
+    if (engine) {
+        this->renderEngine = engine;
+        engine->setWindow(this);
     }
 }
 #endif

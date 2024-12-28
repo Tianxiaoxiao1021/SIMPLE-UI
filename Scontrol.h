@@ -45,9 +45,6 @@ public:
 	Slayout getLayout() const {
 		return this->layout;
 	}
-	void setLayout(Slayout l) {
-		this->layout = l;
-	}
 	void render();
 };
 // 列表类
@@ -117,22 +114,128 @@ public:
 		return this->text;
 	}
 };
+// 字符及其颜色的结构体
+struct StextElement {
+	char c;        // 字符
+	Scolor color;  // 对应的颜色
+};
+// 在 SeditBox 中使用的字符类
+struct Stext {
+	std::vector<StextElement> elements;  // 存储字符和颜色的容器
+	size_t size() const {return elements.size();}
+	char getChar(size_t index) const {
+		if (index < elements.size()) {
+			return elements[index].c;
+		}
+		return '\0';
+	}
+	Scolor getColor(size_t index) const {
+		if (index < elements.size()) {
+			return elements[index].color;
+		}
+		return Scolor::BLACK;
+	}
+	void setColor(size_t index, Scolor color) {
+		if (index < elements.size()) {
+			elements[index].color = color;
+		}
+	}
+	void addChar(char c, Scolor color) {
+		elements.push_back({ c, color });
+	}
+	void deleteChar() {
+		if (!elements.empty()) {
+			elements.pop_back();
+		}
+	}
+	void clear() {
+		elements.clear();
+	}
+};
+class SeditBox : public SemptyBox {
+private:
+	Stext m_Text;
+public:
+	SeditBox(Swindow* p, int w, int h)
+		: SemptyBox(p, w, h) {}
+
+	SeditBox(Swindow* p, int w, int h, Slayout l)
+		: SemptyBox(p, w, h, l) {}
+
+	SeditBox(Swindow* p, int w, int h, Slayout l, std::string t)
+		: SemptyBox(p, w, h, l) {
+		for (char c : t) {
+			m_Text.addChar(c, Scolor::BLACK);
+		}
+	}
+	void setCharColor(size_t index, Scolor color) {
+		m_Text.setColor(index, color);
+	}
+	Scolor getCharColor(size_t index) const {
+		return m_Text.getColor(index);
+	}
+	void setTextColor(Scolor color) {
+		for (size_t i = 0; i < m_Text.size(); ++i) {
+			m_Text.setColor(i, color);
+		}
+	}
+	void setText(std::string t) {
+		m_Text.clear();
+		for (char c : t) {
+			m_Text.addChar(c, Scolor::BLACK);
+		}
+	}
+	Stext getText() const {
+		return m_Text;
+	}
+	void appendText(std::string t) {
+		for (char c : t) {
+			m_Text.addChar(c, Scolor::BLACK);
+		}
+	}
+	void addChar(char c, Scolor color) {
+		m_Text.addChar(c, color);
+	}
+	void deleteChar() {
+		m_Text.deleteChar();
+	}
+	void clearText() {
+		m_Text.clear();
+	}
+	void insertText(std::string t) {
+		for (char c : t) {
+			m_Text.addChar(c, Scolor::BLACK);
+		}
+	}
+	void OnTextChange();
+};
 // 按钮类
 class Sbutton : public Scontrol {
 private:
-	std::string text;
+	Stext text;
 	bool pressed;
+	Scolor normalColor, pressedColor, currColor;
 public:
 	Sbutton(Swindow* p, int w, int h)
-		:Scontrol(p, w, h), pressed(false) {}
+		:Scontrol(p, w, h), pressed(false) {
+		this->normalColor = Scolor::WHITE;
+		this->pressedColor = Scolor::GRAY;
+		this->currColor = this->normalColor;
+	}
 	Sbutton(Swindow* p, int w, int h, Slayout l)
-		:Scontrol(p, w, h, l), pressed(false) {}
-	Sbutton(Swindow* p, int w, int h, Slayout l, std::string t)
-		:Scontrol(p, w, h, l), text(t), pressed(false) {}
-	void setText(std::string t) {
+		:Scontrol(p, w, h, l), pressed(false) {
+		this->normalColor = Scolor::WHITE;
+		this->pressedColor = Scolor::GRAY;
+		this->currColor = this->normalColor;
+	}
+	Sbutton(Swindow* p, int w, int h, Slayout l, Stext t, Scolor c1, Scolor c2)
+		:Scontrol(p, w, h, l), text(t), pressed(false), normalColor(c1), pressedColor(c2) {
+		this->currColor = this->normalColor;
+	}
+	void setText(Stext t) {
 		this->text = t;
 	}
-	std::string getText() const {
+	Stext getText() const {
 		return this->text;
 	}
 	bool isPressed() const {
@@ -140,59 +243,5 @@ public:
 	}
 	void OnPress();
 	void OnRelease();
-};
-// 在 SeditBox 中使用的字符类
-struct Stext {
-	std::string c;
-	Scolor textColor;
-	bool underlined;
-};
-// 输入框类
-class SeditBox : public SemptyBox {
-private:
-	Stext text;
-public:
-	SeditBox(Swindow* p, int w, int h)
-		:SemptyBox(p, w, h) {}
-	SeditBox(Swindow* p, int w, int h, Slayout l)
-		:SemptyBox(p, w, h, l) {}
-	SeditBox(Swindow* p, int w, int h, Slayout l, std::string t)
-		:SemptyBox(p, w, h, l) {this->text.c = t;}
-	void setText(std::string t) {
-		text.c = t;
-	}
-	void appendText(std::string t) {
-		text.c += t;
-	}
-	void addChar(char c) {
-		text.c += c;
-	}
-	void deleteChar() {
-		if (text.c.size() > 0) {
-			text.c.pop_back();
-		}
-	}
-	void clearText() {
-		text.c.clear();
-	}
-	void insertText(std::string t) {
-		text.c.insert(text.c.size() - 1, t);
-	}
-	Stext getText() const {
-		return this->text;
-	}
-	void setTextColor(Scolor c) {
-		text.textColor = c;
-	}
-	Scolor getTextColor() const {
-		return text.textColor;
-	}
-	void setUnderlined(bool u) {
-		text.underlined = u;
-	}
-	bool isUnderlined() const {
-		return text.underlined;
-	}
-	void OnTextChange();
 };
 #endif
