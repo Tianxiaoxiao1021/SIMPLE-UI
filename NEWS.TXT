@@ -5,6 +5,9 @@ Refactor almost all code, optimize some code structure and design including cons
 3.Fixed the bug that Swindow needs to be bound to each other with SrenderEngine.
 [2024.12.8 UTC+8 21:41 UTC+5 08:41 { IMPORTANT UPDATE } ]
 Added definitions for Slabel, Sbutton and many other classes.
-[2024.12.29 UTC+8 2:54 UTC+5 13:54 {UPDATE} ]
+[2024.12.29 UTC+8 2:54 UTC+5 13:54 { UPDATE } ]
 This update focuses on fixing a rendering issue with the SrenderEngine class, now the SrenderEngine::render() function will only render one frame, which means you need to use a while loop to control the rendering continuously.
 Additionally, we fixed the bug in the test.cpp file, and now that we have ensured that the test.cpp file is using the latest API, you can test if the current version of the SIMPLE-UI library works on your PC, and if it does, you should see a few triangles in the program window.
+[2025.1.4 UTC+8 22:12 UTC+5 09:12 { ONGOING WORK } ]
+Happy new year!
+Our official website is under construction, the domain name is temporarily set to simple-ui.com (the website is not accessible yet).

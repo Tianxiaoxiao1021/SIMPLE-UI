@@ -3,10 +3,9 @@
 #define SIMPLE_UI_H
 /*
 * 
-* SIMPLE-UI framework
+* SIMPLE-UI the GUI framework
 * 
-* 
-* copyright (c) 2024 Tianxiaoxiao1021
+* copyright (c) 2024 Tianxiaoxiao1021 & Tianxiaoxiao Development team
 * 
 */
 #include "dependency.h"
